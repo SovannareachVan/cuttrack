@@ -62,25 +62,40 @@ cuttrack/
 └── package.json
 ```
 
+## Planning modes
+
+Every person who trains gets their own profile. Each profile picks one of two
+planning modes, changeable at any time from the profile menu.
+
+**Pick each day (default).** When a day has no workout chosen yet, the app
+asks *What are you training today?* — Shoulders, Chest, Back, Legs, Arms,
+Upper Body, Full Body or Rest Day. One tap builds the session. Every new day
+asks again, so nothing is locked in advance.
+
+**Weekly program.** A fixed split decides the day: 6-Day, Push/Pull/Legs,
+Upper/Lower or Full Body. You can also hand-edit individual days with
+*Edit my week*.
+
+Changing mode keeps all logged history.
+
 ## Profiles
 
-Every person who trains gets their own profile with its own program and its own
-history. Data is stored under `cuttrack-v2` in LocalStorage:
+Data is stored under `cuttrack-v2` in LocalStorage:
 
 ```text
 cuttrack-v2
 ├── activeProfileId
 └── profiles
     └── p_ab12cd34
-        ├── name, programId, customDays
+        ├── name, mode, programId, customDays
+        ├── plans:   { "2026-10-19": "shoulder_day" }   ← the day's choice
         ├── days:    { "2026-10-19": { workoutId, exercises, cardio, completed } }
         └── weights: { "2026-10-19": 78.4 }
 ```
 
-- `programId` picks one of the four weekly splits.
-- `customDays` optionally overrides individual days, so two people on the same
-  split can have different schedules.
-- Older `cuttrack-v1` data is migrated into a default profile automatically.
+`plans` is kept separate from `days`, so resetting a logged workout does not
+erase what you planned to do. Older `cuttrack-v1` data is migrated into a
+default profile automatically.
 
 ## Editing your plan
 

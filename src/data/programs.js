@@ -339,6 +339,29 @@ export const PROGRAM_LIST = Object.values(PROGRAMS);
 export const DEFAULT_PROGRAM_ID = 'six_day';
 
 /**
+ * DAILY CHOICES
+ * -------------
+ * The "pick what you're training today" mode. Instead of committing to a
+ * weekly program, you tap one of these when the day starts.
+ *
+ * `icon` is a Lucide icon name, so the buttons look consistent with the rest
+ * of the app on every device (emoji render differently per platform).
+ *
+ * The Push/Pull and Upper/Lower workouts are not listed here — those belong
+ * to program mode. Add them here if you want them in the daily picker too.
+ */
+export const DAILY_CHOICES = [
+  { workoutId: 'shoulder_day', label: 'Shoulders', icon: 'Dumbbell' },
+  { workoutId: 'chest_day', label: 'Chest', icon: 'Heart' },
+  { workoutId: 'back_day', label: 'Back', icon: 'Layers' },
+  { workoutId: 'leg_day', label: 'Legs', icon: 'Activity' },
+  { workoutId: 'arm_day', label: 'Arms', icon: 'Zap' },
+  { workoutId: 'upper_body_day', label: 'Upper Body', icon: 'MoveHorizontal' },
+  { workoutId: 'full_body_a', label: 'Full Body', icon: 'RefreshCw' },
+  { workoutId: 'recovery_day', label: 'Rest Day', icon: 'Moon' },
+];
+
+/**
  * Returns the workout scheduled on a given JS day number for a program.
  *
  * `customDays` is an optional per-profile override, e.g.

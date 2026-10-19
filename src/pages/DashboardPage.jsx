@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 
 import Topbar from '../components/layout/Topbar';
+import DayPicker from '../components/profile/DayPicker';
 import TodayWorkout from '../components/dashboard/TodayWorkout';
 import StatsCards from '../components/dashboard/StatsCards';
 import WeekPreview from '../components/dashboard/WeekPreview';
@@ -9,7 +10,7 @@ import ExerciseCard from '../components/workout/ExerciseCard';
 import ExerciseDetails from '../components/workout/ExerciseDetails';
 import CardioTimer from '../components/workout/CardioTimer';
 
-import { getWorkoutForDay } from '../data/programs';
+import { WORKOUTS, getWorkoutForDay } from '../data/programs';
 import { getExercise } from '../data/exercises';
 import { useAppStore } from '../hooks/useAppStore';
 import {
@@ -29,12 +30,21 @@ export default function DashboardPage() {
   const store = useAppStore();
   const { activeProfile } = store;
 
+  // Daily mode: the workout is whatever was chosen for THIS date. Program
+  // mode: the date decides, unless the week was hand-edited.
   const dayNumber = fromDateKey(dateKey).getDay();
-  const workout = getWorkoutForDay(
-    dayNumber,
-    activeProfile?.programId,
-    activeProfile?.customDays
-  );
+  const plannedId = activeProfile?.plans?.[dateKey] ?? null;
+
+  const workoutId =
+    plannedId ??
+    (activeProfile?.customDays?.[dayNumber] ??
+      getWorkoutForDay(dayNumber, activeProfile?.programId).id);
+
+  const workout = WORKOUTS[workoutId] ?? WORKOUTS.recovery_day;
+
+  // In daily mode a day with no choice yet opens the picker instead.
+  const needsPick =
+    activeProfile?.mode === 'daily' && !plannedId && !activeProfile?.customDays;
 
   // Resolve ids to real exercises. A bad id is skipped rather than crashing.
   const exercises = workout.exercises.map((id) => getExercise(id)).filter(Boolean);
@@ -103,6 +113,21 @@ export default function DashboardPage() {
         </button>
       </nav>
 
+      {/* ---- Nothing chosen yet for this day ---- */}
+      {needsPick ? (
+        <DayPicker
+          dateKey={dateKey}
+          onChoose={(id) => store.setDayPlan(dateKey, id)}
+          onUseProgram={() => {
+            const fallback = getWorkoutForDay(
+              dayNumber,
+              activeProfile?.programId
+            );
+            store.setDayPlan(dateKey, fallback.id);
+          }}
+        />
+      ) : (
+        <>
       {!isToday ? (
         <button
           type="button"
@@ -126,6 +151,7 @@ export default function DashboardPage() {
             onToggleComplete={() =>
               store.setWorkoutComplete(dateKey, !record.completed)
             }
+            onChangeWorkout={() => store.setDayPlan(dateKey, null)}
           />
 
             <div className="section" id="today-exercises">
@@ -213,6 +239,8 @@ export default function DashboardPage() {
           onClose={closeModal}
         />
       ) : null}
+        </>
+      )}
     </>
   );
 }

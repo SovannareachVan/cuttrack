@@ -15,6 +15,7 @@ export default function TodayWorkout({
   completedSets = 0,
   workoutDone = false,
   onToggleComplete,
+  onChangeWorkout,
 }) {
   const percent =
     totalSets === 0 ? 0 : Math.round((completedSets / totalSets) * 100);
@@ -85,6 +86,16 @@ export default function TodayWorkout({
         <Link className="btn btn--ghost btn--block" to="/calendar">
           View schedule
         </Link>
+
+        {onChangeWorkout ? (
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm btn--block"
+            onClick={onChangeWorkout}
+          >
+            Change today’s workout
+          </button>
+        ) : null}
       </div>
     </section>
   );

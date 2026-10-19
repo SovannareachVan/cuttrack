@@ -26,12 +26,20 @@ import { DEFAULT_PROGRAM_ID } from '../data/programs';
  *   activeProfileId: "p_ab12cd34",
  *   profiles: {
  *     p_ab12cd34: {
- *       id, name, programId, createdAt,
+ *       id, name, mode, programId, customDays, createdAt,
+ *       plans:   { "2026-10-19": "shoulder_day" },   // which workout that day
  *       days:    { "2026-10-19": { workoutId, exercises, cardio, completed, updatedAt } },
  *       weights: { "2026-10-19": 78.4 }
  *     }
  *   }
  * }
+ *
+ * PLANNING MODES
+ *   'daily'   choose the workout when the day starts (the default)
+ *   'program' follow a fixed weekly split chosen at setup
+ *
+ * `plans` holds the daily choice, kept separate from `days` so that resetting
+ * a logged workout does not erase what you planned to do.
  *
  * Each person (you, your brother) is a separate profile with its own program
  * and its own history. Switching profile switches everything.
@@ -173,7 +181,7 @@ export function AppStoreProvider({ children }) {
 
   /* ---------------- Profiles ---------------- */
 
-  const createProfile = useCallback((name, programId) => {
+  const createProfile = useCallback((name, programId, mode = 'daily') => {
     const id = makeProfileId();
     setStore((prev) => ({
       ...prev,
@@ -183,8 +191,10 @@ export function AppStoreProvider({ children }) {
         [id]: {
           id,
           name: name.trim() || 'Athlete',
+          mode,
           programId,
           createdAt: new Date().toISOString(),
+          plans: {},
           days: {},
           weights: {},
         },
@@ -250,6 +260,40 @@ export function AppStoreProvider({ children }) {
       profiles: {
         ...prev.profiles,
         [profileId]: { ...prev.profiles[profileId], customDays: days },
+      },
+    }));
+  }, []);
+
+  /**
+   * Chooses which workout a given day will be.
+   * Used by 'daily' mode, where you pick at the start of every session.
+   */
+  const setDayPlan = useCallback((dateKey, workoutId) => {
+    setStore((prev) => {
+      const profileId = prev.activeProfileId;
+      if (!profileId) return prev;
+
+      const profile = prev.profiles[profileId];
+      return {
+        ...prev,
+        profiles: {
+          ...prev.profiles,
+          [profileId]: {
+            ...profile,
+            plans: { ...profile.plans, [dateKey]: workoutId },
+          },
+        },
+      };
+    });
+  }, []);
+
+  /** Switches between picking each day and following a weekly program. */
+  const setProfileMode = useCallback((profileId, mode) => {
+    setStore((prev) => ({
+      ...prev,
+      profiles: {
+        ...prev.profiles,
+        [profileId]: { ...prev.profiles[profileId], mode },
       },
     }));
   }, []);
@@ -429,6 +473,8 @@ export function AppStoreProvider({ children }) {
       setProfileName,
       setProfileProgram,
       setProfileDays,
+      setDayPlan,
+      setProfileMode,
       getDay,
       setSetField,
       toggleSet,
@@ -447,6 +493,8 @@ export function AppStoreProvider({ children }) {
       setProfileName,
       setProfileProgram,
       setProfileDays,
+      setDayPlan,
+      setProfileMode,
       getDay,
       setSetField,
       toggleSet,

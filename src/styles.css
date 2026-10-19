@@ -1523,6 +1523,40 @@ ul {
   margin-top: var(--sp-2);
 }
 
+.pmenu__modes {
+  padding: 0;
+}
+
+.pmenu__modes .pmenu__label {
+  display: block;
+}
+
+.pmenu__mode {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  font-size: var(--fs-xs);
+  font-weight: 620;
+  color: var(--text-muted);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pmenu__mode:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.pmenu__mode--on {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
 .pmenu__note {
   margin-top: 6px;
   color: var(--text-soft);
@@ -1559,6 +1593,150 @@ ul {
 
 .week-editor .btn {
   margin-top: var(--sp-2);
+}
+
+/* ==========================================================================
+   Day picker — "what are you training today?"
+   ========================================================================== */
+.picker {
+  animation: fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.picker__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-strong);
+}
+
+.picker__title {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-2xl);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+.picker__sub {
+  margin-top: var(--sp-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.picker__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin: var(--sp-5) 0 var(--sp-4);
+}
+
+.pick {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 116px;
+  padding: var(--sp-4);
+  text-align: left;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  animation: fade-up 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: border-color 0.16s ease, transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.pick:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.pick:active {
+  transform: translateY(0);
+}
+
+.pick--rest {
+  background: var(--surface-alt);
+}
+
+.pick__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.pick--rest .pick__icon {
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+}
+
+.pick__label {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pick__meta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Planning-mode choice in the profile menu */
+.mode-grid {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.mode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: var(--sp-4);
+  text-align: left;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.16s ease, background 0.16s ease,
+    transform 0.16s ease;
+}
+
+.mode:hover {
+  border-color: var(--accent-border);
+  transform: translateY(-2px);
+}
+
+.mode--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mode svg {
+  color: var(--accent-strong);
+}
+
+.mode strong {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mode small {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 /* ==========================================================================

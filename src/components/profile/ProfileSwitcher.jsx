@@ -109,8 +109,10 @@ export default function ProfileSwitcher({ store }) {
                 <span className="pmenu__text">
                   <strong>{profile.name}</strong>
                   <small>
-                    {PROGRAM_LIST.find((p) => p.id === profile.programId)?.name ??
-                      'Program'}
+                    {profile.mode === 'daily'
+                      ? 'Picks each day'
+                      : (PROGRAM_LIST.find((p) => p.id === profile.programId)
+                          ?.name ?? 'Program')}
                   </small>
                 </span>
                 {profile.id === store.activeProfileId ? (
@@ -190,30 +192,61 @@ export default function ProfileSwitcher({ store }) {
 
           <div className="pmenu__divider" />
 
-          <details className="pmenu__details">
-            <summary>
-              <Settings size={15} aria-hidden="true" />
-              Change my program
-            </summary>
-            <select
-              className="field__input"
-              value={activeProfile?.programId}
-              onChange={(event) =>
-                store.setProfileProgram(store.activeProfileId, event.target.value)
-              }
-            >
-              {PROGRAM_LIST.map((program) => (
-                <option key={program.id} value={program.id}>
-                  {program.name}
-                </option>
-              ))}
-            </select>
-            <p className="pmenu__note">
-              Changing program changes upcoming workouts. Past history is kept.
-            </p>
-          </details>
+          <div className="pmenu__modes">
+            <span className="pmenu__label">Planning</span>
+            {[
+              { id: 'daily', label: 'Pick each day' },
+              { id: 'program', label: 'Weekly program' },
+            ].map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                className={`pmenu__mode${
+                  activeProfile?.mode === option.id ? ' pmenu__mode--on' : ''
+                }`}
+                onClick={() =>
+                  store.setProfileMode(store.activeProfileId, option.id)
+                }
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
 
-          <WeekEditor key={store.activeProfileId} store={store} />
+          {activeProfile?.mode === 'program' ? (
+            <>
+              <div className="pmenu__divider" />
+
+              <details className="pmenu__details">
+                <summary>
+                  <Settings size={15} aria-hidden="true" />
+                  Change my program
+                </summary>
+                <select
+                  className="field__input"
+                  value={activeProfile?.programId}
+                  onChange={(event) =>
+                    store.setProfileProgram(
+                      store.activeProfileId,
+                      event.target.value
+                    )
+                  }
+                >
+                  {PROGRAM_LIST.map((program) => (
+                    <option key={program.id} value={program.id}>
+                      {program.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="pmenu__note">
+                  Changing program changes upcoming workouts. Past history is
+                  kept.
+                </p>
+              </details>
+
+              <WeekEditor key={store.activeProfileId} store={store} />
+            </>
+          ) : null}
         </div>
       ) : null}
     </div>
